@@ -7,8 +7,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 
 // Rutas públicas
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/track', [HomeController::class, 'trackForm'])->name('track.form');  // ← Ruta GET agregada
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
+Route::get('/track', [HomeController::class, 'trackForm'])->name('track.form');
 Route::post('/track', [HomeController::class, 'track'])->name('track');
 
 // Rutas protegidas (requieren autenticación)
