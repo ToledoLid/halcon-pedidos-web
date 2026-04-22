@@ -79,11 +79,26 @@
                 <td>
                     <a href="{{ route('orders.show', $order) }}" class="btn btn-info btn-sm">Ver</a>
                     <a href="{{ route('orders.edit', $order) }}" class="btn btn-warning btn-sm">Editar</a>
+                    
+                    <!-- Botón Archivar -->
+                    @if(in_array(auth()->user()->role->name, ['admin', 'sales']))
+                    <form action="{{ route('orders.archive', $order) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-secondary btn-sm" onclick="return confirm('¿Archivar este pedido?')">
+                            📦 Archivar
+                        </button>
+                    </form>
+                    @endif
+                    
+                    <!-- Botón Eliminar (solo admin) -->
                     @if(auth()->user()->role->name == 'admin')
                     <form action="{{ route('orders.destroy', $order) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar este pedido?')">Eliminar</button>
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar este pedido?')">
+                            🗑️ Eliminar
+                        </button>
                     </form>
                     @endif
                 </td>

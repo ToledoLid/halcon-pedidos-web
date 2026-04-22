@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\InventoryController;  // ← Agrega esta línea
 
 // Rutas públicas
 Route::get('/', function () {
@@ -29,6 +30,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('orders/trashed/list', [OrderController::class, 'trashed'])->name('orders.trashed');
     Route::patch('orders/{id}/restore', [OrderController::class, 'restore'])->name('orders.restore');
     Route::delete('orders/{id}/force-delete', [OrderController::class, 'forceDelete'])->name('orders.force-delete');
+    
+    // ========== NUEVAS RUTAS PARA ARCHIVADO ==========
+    Route::patch('orders/{order}/archive', [OrderController::class, 'archive'])->name('orders.archive');
+    Route::get('orders/archived/list', [OrderController::class, 'archived'])->name('orders.archived');
+    Route::patch('orders/{id}/restore-archived', [OrderController::class, 'restoreArchived'])->name('orders.restore-archived');
+    
+    // ========== RUTAS PARA INVENTARIO ==========
+    Route::resource('inventory', InventoryController::class);
+    Route::post('inventory/{product}/adjust-stock', [InventoryController::class, 'adjustStock'])->name('inventory.adjust-stock');
 });
 
 require __DIR__.'/auth.php';

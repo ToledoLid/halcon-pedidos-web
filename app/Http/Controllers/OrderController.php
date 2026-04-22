@@ -15,7 +15,8 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-        $query = Order::with('creator')->orderBy('created_at', 'desc');
+        // CAMBIADO: Agregado ->active() para mostrar solo pedidos NO archivados
+        $query = Order::active()->with('creator')->orderBy('created_at', 'desc');
 
         if ($request->filled('invoice_number')) {
             $query->where('invoice_number', 'like', '%' . $request->invoice_number . '%');
@@ -38,13 +39,14 @@ class OrderController extends Controller
 
         return view('orders.index', compact('orders', 'statuses'));
     }
-public function create()
-{
-    if (!in_array(auth()->user()->role->name, ['admin', 'sales'])) {
-        abort(403, 'No tienes permiso para crear pedidos.');
+
+    public function create()
+    {
+        if (!in_array(auth()->user()->role->name, ['admin', 'sales'])) {
+            abort(403, 'No tienes permiso para crear pedidos.');
+        }
+        return view('orders.create');
     }
-    return view('orders.create');
-}
 
     public function store(Request $request)
     {
@@ -186,5 +188,41 @@ public function create()
         $order = Order::onlyTrashed()->findOrFail($id);
         $order->forceDelete();
         return redirect()->route('orders.trashed')->with('success', 'Pedido eliminado permanentemente.');
+    }
+
+    // ========== NUEVOS MÉTODOS PARA ARCHIVADO ==========
+
+    // Archivar pedido
+    public function archive(Order $order)
+    {
+        if (!in_array(auth()->user()->role->name, ['admin', 'sales'])) {
+            abort(403, 'No tienes permiso para archivar pedidos.');
+        }
+        
+        $order->archive();
+        return redirect()->route('orders.index')->with('success', 'Pedido archivado correctamente.');
+    }
+
+    // Listar pedidos archivados
+    public function archived()
+    {
+        if (!in_array(auth()->user()->role->name, ['admin', 'sales'])) {
+            abort(403, 'No tienes permiso para ver pedidos archivados.');
+        }
+        
+        $orders = Order::archived()->with('creator')->orderBy('created_at', 'desc')->paginate(15);
+        return view('orders.archived', compact('orders'));
+    }
+
+    // Restaurar pedido (desarchivar)
+    public function restoreArchived($id)
+    {
+        if (!in_array(auth()->user()->role->name, ['admin', 'sales'])) {
+            abort(403, 'No tienes permiso para restaurar pedidos.');
+        }
+        
+        $order = Order::findOrFail($id);
+        $order->unarchive();
+        return redirect()->route('orders.archived')->with('success', 'Pedido restaurado correctamente.');
     }
 }

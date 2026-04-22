@@ -9,7 +9,6 @@ class Order extends Model
 {
     use SoftDeletes;
 
-    // Constantes de estados
     const STATUS_ORDERED = 'ordered';
     const STATUS_IN_PROCESS = 'in_process';
     const STATUS_IN_ROUTE = 'in_route';
@@ -33,41 +32,60 @@ class Order extends Model
         'delivery_address',
         'notes',
         'status',
-        'created_by'
+        'created_by',
+        'archived'
     ];
 
     protected $casts = [
         'order_date' => 'datetime',
         'deleted_at' => 'datetime',
+        'archived' => 'boolean',
     ];
 
-    // Relación con el usuario que creó el pedido
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // Relación con todas las fotos
     public function photos()
     {
         return $this->hasMany(Photo::class);
     }
 
-    // Relación para obtener la foto de carga (la más reciente)
     public function loading_photo()
     {
         return $this->hasOne(Photo::class)->where('photo_type', 'loading')->latest();
     }
 
-    // Relación para obtener la foto de entrega (la más reciente)
     public function delivery_photo()
     {
         return $this->hasOne(Photo::class)->where('photo_type', 'delivery')->latest();
     }
 
-    // Accessor para obtener el label del estado
     public function getStatusLabelAttribute()
     {
         return self::$statuses[$this->status] ?? $this->status;
+    }
+
+    public function archive()
+    {
+        $this->archived = true;
+        $this->save();
+    }
+
+    public function unarchive()
+    {
+        $this->archived = false;
+        $this->save();
+    }
+
+    public function scopeArchived($query)
+    {
+        return $query->where('archived', true);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('archived', false);
     }
 }

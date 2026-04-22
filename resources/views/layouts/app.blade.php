@@ -50,7 +50,7 @@
             margin: 0;
             font-size: 1.5rem;
             font-weight: 600;
-            background: linear-gradient(135deg, #4e73df, #224abe);
+            background: linear-gradient(135deg, #7a97ed, #374f97);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -92,7 +92,7 @@
         }
 
         .nav-link.active {
-            background: linear-gradient(135deg, #4e73df, #224abe);
+            background: linear-gradient(135deg, #576ba7, #3f5aaa);
             color: white;
             box-shadow: 0 4px 15px rgba(78,115,223,0.3);
         }
@@ -122,7 +122,7 @@
         .user-avatar {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #4e73df, #224abe);
+            background: linear-gradient(135deg, #2d417e, #475d9d);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -167,7 +167,7 @@
         .stat-icon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, #4e73df, #224abe);
+            background: linear-gradient(135deg, #4e438e, #2f3f6e);
             border-radius: 15px;
             display: flex;
             align-items: center;
@@ -218,7 +218,7 @@
 
         /* Buttons */
         .btn-primary {
-            background: linear-gradient(135deg, #4e73df, #224abe);
+            background: linear-gradient(135deg, #2b3e74, #255f6c);
             border: none;
             padding: 10px 24px;
             border-radius: 12px;
@@ -270,16 +270,28 @@
             </div>
             @endif
             <div class="nav-item">
-                <a href="{{ route('orders.index') }}" class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}">
+                <a href="{{ route('orders.index') }}" class="nav-link {{ request()->routeIs('orders.index') ? 'active' : '' }}">
                     <i class="bi bi-box-seam"></i>
-                    <span>Pedidos</span>
+                    <span>Pedidos Activos</span>
                 </a>
             </div>
             @if(Auth::user()->role && Auth::user()->role->name == 'admin')
             <div class="nav-item">
-                <a href="{{ route('orders.trashed') }}" class="nav-link">
+                <a href="{{ route('orders.archived') }}" class="nav-link {{ request()->routeIs('orders.archived') ? 'active' : '' }}">
                     <i class="bi bi-archive"></i>
-                    <span>Archivados</span>
+                    <span>Pedidos Archivados</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{{ route('orders.trashed') }}" class="nav-link {{ request()->routeIs('orders.trashed') ? 'active' : '' }}">
+                    <i class="bi bi-trash"></i>
+                    <span>Papelera</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{{ route('inventory.index') }}" class="nav-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
+                    <i class="bi bi-boxes"></i>
+                    <span>Inventario</span>
                 </a>
             </div>
             @endif
