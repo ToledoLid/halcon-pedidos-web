@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role_id', 'is_active'
+        'name', 'email', 'password', 'role_id', 'is_active', 'department_id'
     ];
 
     protected $hidden = [
@@ -29,14 +30,19 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function orders()
+    public function department()
     {
-        return $this->hasMany(Order::class, 'created_by');
+        return $this->belongsTo(Department::class);
     }
 
-    public function photos()
+    public function orders()
     {
-        return $this->hasMany(Photo::class, 'uploaded_by');
+        return $this->hasMany(Order::class, 'user_id');
+    }
+
+    public function statusChanges()
+    {
+        return $this->hasMany(OrderStatusHistory::class, 'changed_by');
     }
 
     // Métodos de verificación de roles
