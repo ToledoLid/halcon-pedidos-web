@@ -87,27 +87,16 @@
             <p>Sistema de seguimiento de pedidos</p>
         </div>
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login.api') }}">
             @csrf
             <div class="mb-3">
                 <label class="form-label">Correo electrónico</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border-end-0">
-                        <i class="bi bi-envelope"></i>
-                    </span>
-                    <input type="email" name="email" class="form-control border-start-0" 
-                           value="{{ old('email') }}" required autofocus>
-                </div>
+                <input type="email" name="email" class="form-control" value="admin@example.com" required>
             </div>
 
             <div class="mb-4">
                 <label class="form-label">Contraseña</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border-end-0">
-                        <i class="bi bi-lock"></i>
-                    </span>
-                    <input type="password" name="password" class="form-control border-start-0" required>
-                </div>
+                <input type="password" name="password" class="form-control" value="admin123" required>
             </div>
 
             <div class="mb-3 form-check">
@@ -120,13 +109,9 @@
             </button>
         </form>
 
-        @if (Route::has('password.request'))
-            <div class="text-center mt-3">
-                <a href="{{ route('password.request') }}" class="text-decoration-none small">
-                    ¿Olvidaste tu contraseña?
-                </a>
-            </div>
-        @endif
+        <div class="text-center mt-3">
+            <a href="#" class="text-decoration-none small">¿Olvidaste tu contraseña?</a>
+        </div>
     </div>
 </body>
 </html>

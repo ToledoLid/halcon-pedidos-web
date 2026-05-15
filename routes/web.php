@@ -1,44 +1,35 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\InventoryController;  // ← Agrega esta línea
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
 
 // Rutas públicas
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/track', [HomeController::class, 'trackForm'])->name('track.form');
-Route::post('/track', [HomeController::class, 'track'])->name('track');
+// Rutas de autenticación con API
+Route::get('/login', [ApiAuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [ApiAuthController::class, 'login'])->name('login.api');
+Route::post('/logout', [ApiAuthController::class, 'logout'])->name('logout.api');
 
-// Rutas protegidas (requieren autenticación)
-Route::middleware(['auth'])->group(function () {
+// Rutas protegidas (requieren token de API)
+Route::middleware(['api.auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Gestión de usuarios (solo admin)
-    Route::resource('users', UserController::class)->except(['show']);
-    Route::patch('users/{user}/restore', [UserController::class, 'restore'])->name('users.restore');
+    // Rutas de pedidos
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+    Route::put('/orders/{id}', [OrderController::class, 'update'])->name('orders.update');
+    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+    Route::post('/orders/{id}/photo', [OrderController::class, 'uploadPhoto'])->name('orders.photo');
     
-    // Gestión de pedidos
-    Route::resource('orders', OrderController::class);
-    Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-    Route::post('orders/{order}/photo', [OrderController::class, 'uploadPhoto'])->name('orders.upload-photo');
-    Route::get('orders/trashed/list', [OrderController::class, 'trashed'])->name('orders.trashed');
-    Route::patch('orders/{id}/restore', [OrderController::class, 'restore'])->name('orders.restore');
-    Route::delete('orders/{id}/force-delete', [OrderController::class, 'forceDelete'])->name('orders.force-delete');
-    
-    // ========== NUEVAS RUTAS PARA ARCHIVADO ==========
-    Route::patch('orders/{order}/archive', [OrderController::class, 'archive'])->name('orders.archive');
-    Route::get('orders/archived/list', [OrderController::class, 'archived'])->name('orders.archived');
-    Route::patch('orders/{id}/restore-archived', [OrderController::class, 'restoreArchived'])->name('orders.restore-archived');
-    
-    // ========== RUTAS PARA INVENTARIO ==========
-    Route::resource('inventory', InventoryController::class);
-    Route::post('inventory/{product}/adjust-stock', [InventoryController::class, 'adjustStock'])->name('inventory.adjust-stock');
+    // Rutas de usuarios
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 });
-
-require __DIR__.'/auth.php';

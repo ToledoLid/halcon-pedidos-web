@@ -6,123 +6,93 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Halcon System - @yield('title', 'Dashboard')</title>
     
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #e9ecef;
-            overflow-x: hidden;
-        }
-
-        /* Sidebar */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
+        
         .sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            width: 280px;
-            height: 100vh;
+            width: 260px;
+            height: 100%;
             background: linear-gradient(135deg, #1a1e2b 0%, #0f1119 100%);
             color: white;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             z-index: 1000;
         }
-
+        
         .sidebar-header {
-            padding: 24px 20px;
+            padding: 25px 20px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-
+        
         .sidebar-header h3 {
-            margin: 0;
             font-size: 1.5rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #7a97ed, #374f97);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: 700;
+            margin: 0;
         }
-
+        
         .sidebar-header p {
             font-size: 0.75rem;
             opacity: 0.6;
             margin-top: 5px;
         }
-
+        
         .sidebar-nav {
             padding: 20px 0;
         }
-
+        
         .nav-item {
-            margin: 8px 15px;
+            padding: 0 15px;
+            margin-bottom: 5px;
         }
-
+        
         .nav-link {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 16px;
+            padding: 12px 15px;
             color: rgba(255,255,255,0.7);
             text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            transition: all 0.3s;
         }
-
-        .nav-link i {
-            font-size: 1.25rem;
-            width: 24px;
-        }
-
-        .nav-link:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .nav-link.active {
-            background: linear-gradient(135deg, #576ba7, #3f5aaa);
-            color: white;
-            box-shadow: 0 4px 15px rgba(78,115,223,0.3);
-        }
-
-        /* Main Content */
+        
+        .nav-link i { font-size: 1.2rem; }
+        .nav-link:hover { background: rgba(255,255,255,0.1); color: white; }
+        .nav-link.active { background: #4e73df; color: white; }
+        
         .main-content {
-            margin-left: 280px;
-            min-height: 100vh;
+            margin-left: 260px;
+            padding: 20px;
         }
-
-        /* Top Navbar */
-        .top-navbar {
+        
+        .top-bar {
             background: white;
-            padding: 15px 30px;
+            padding: 15px 25px;
+            border-radius: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 25px;
         }
-
+        
         .user-info {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-
+        
         .user-avatar {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #2d417e, #475d9d);
+            background: #4e73df;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -130,125 +100,75 @@
             color: white;
             font-weight: bold;
         }
-
-        .user-name {
-            font-weight: 500;
-            color: #1a1e2b;
-        }
-
-        .user-role-badge {
-            background: #e9ecef;
-            color: #495057;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 500;
-        }
-
-        /* Content Area */
-        .content-area {
-            padding: 30px;
-        }
-
-        /* Cards */
+        
         .stat-card {
             background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #4e438e, #2f3f6e);
             border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover { transform: translateY(-5px); }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4e73df, #224abe);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 1.5rem;
         }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1a1e2b;
-        }
-
-        .stat-label {
-            color: #6c757d;
-            font-size: 0.875rem;
-        }
-
-        /* Tables */
-        .custom-table {
+        
+        .stat-number { font-size: 1.8rem; font-weight: 700; color: #1a1e2b; }
+        .stat-label { color: #6c757d; font-size: 0.85rem; }
+        
+        .table-custom {
             background: white;
-            border-radius: 20px;
+            border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-
-        .custom-table thead {
-            background: linear-gradient(135deg, #1a1e2b 0%, #0f1119 100%);
+        
+        .table-custom thead {
+            background: linear-gradient(135deg, #1a1e2b, #0f1119);
             color: white;
         }
-
-        .custom-table thead th {
+        
+        .table-custom thead th {
             padding: 15px;
-            font-weight: 500;
             border: none;
         }
-
-        .custom-table tbody td {
+        
+        .table-custom tbody td {
             padding: 12px 15px;
             vertical-align: middle;
             border-bottom: 1px solid #e9ecef;
         }
-
-        .custom-table tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, #2b3e74, #255f6c);
-            border: none;
-            padding: 10px 24px;
-            border-radius: 12px;
+        
+        .badge-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
             font-weight: 500;
-            transition: transform 0.2s ease;
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(78,115,223,0.3);
-        }
-
-        /* Responsive */
+        
+        .badge-delivered { background: #d4edda; color: #155724; }
+        .badge-in_route { background: #fff3cd; color: #856404; }
+        .badge-in_process { background: #d1ecf1; color: #0c5460; }
+        
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .sidebar.show {
-                transform: translateX(0);
-            }
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; }
+            .sidebar.show { transform: translateX(0); }
         }
     </style>
     @stack('styles')
 </head>
 <body>
-    <!-- Solo mostrar sidebar si el usuario está autenticado -->
-    @auth
     <div class="sidebar">
         <div class="sidebar-header">
             <h3>Halcon System</h3>
@@ -261,112 +181,44 @@
                     <span>Dashboard</span>
                 </a>
             </div>
-            @if(Auth::user()->role && Auth::user()->role->name == 'admin')
             <div class="nav-item">
-                <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                    <i class="bi bi-people"></i>
-                    <span>Usuarios</span>
-                </a>
-            </div>
-            @endif
-            <div class="nav-item">
-                <a href="{{ route('orders.index') }}" class="nav-link {{ request()->routeIs('orders.index') ? 'active' : '' }}">
+                <a href="{{ route('orders.index') }}" class="nav-link">
                     <i class="bi bi-box-seam"></i>
-                    <span>Pedidos Activos</span>
+                    <span>Pedidos</span>
                 </a>
             </div>
-            @if(Auth::user()->role && Auth::user()->role->name == 'admin')
-            <div class="nav-item">
-                <a href="{{ route('orders.archived') }}" class="nav-link {{ request()->routeIs('orders.archived') ? 'active' : '' }}">
-                    <i class="bi bi-archive"></i>
-                    <span>Pedidos Archivados</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="{{ route('orders.trashed') }}" class="nav-link {{ request()->routeIs('orders.trashed') ? 'active' : '' }}">
-                    <i class="bi bi-trash"></i>
-                    <span>Papelera</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="{{ route('inventory.index') }}" class="nav-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
-                    <i class="bi bi-boxes"></i>
-                    <span>Inventario</span>
-                </a>
-            </div>
-            @endif
         </div>
     </div>
-    @endauth
 
-    <!-- Main Content -->
-    <div class="main-content" style="{{ Auth::check() ? '' : 'margin-left: 0;' }}">
-        <div class="top-navbar">
-            <div>
-                @auth
-                <button class="btn btn-link d-md-none" id="sidebarToggle">
-                    <i class="bi bi-list fs-4"></i>
-                </button>
-                @endauth
-                <h5 class="mb-0">@yield('page-title', 'Dashboard')</h5>
-            </div>
+    <div class="main-content">
+        <div class="top-bar">
+            <h5 class="mb-0">@yield('title', 'Dashboard')</h5>
             <div class="user-info">
-                @auth
-                <div class="text-end">
-                    <div class="user-name">{{ Auth::user()->name }}</div>
-                    @if(Auth::user()->role)
-                        <div class="user-role-badge">{{ Auth::user()->role->name }}</div>
-                    @endif
-                </div>
+                <span>{{ Session::get('api_user.name', 'Admin') }}</span>
                 <div class="user-avatar">
-                    {{ substr(Auth::user()->name, 0, 1) }}
+                    {{ substr(Session::get('api_user.name', 'A'), 0, 1) }}
                 </div>
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout.api') }}" class="d-inline">
                     @csrf
-                    <button type="submit" class="btn btn-link text-dark text-decoration-none p-0">
+                    <button type="submit" class="btn btn-link text-dark p-0">
                         <i class="bi bi-box-arrow-right fs-5"></i>
                     </button>
                 </form>
-                @else
-                <div class="d-flex gap-2">
-                    <a href="{{ route('login') }}" class="btn btn-primary btn-sm">
-                        <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
-                    </a>
-                    <a href="{{ route('register') }}" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-person-plus me-1"></i>Registrarse
-                    </a>
-                </div>
-                @endauth
             </div>
         </div>
 
         <div class="content-area">
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+                <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-
             @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+                <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-
             @yield('content')
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('show');
-        });
-    </script>
     @stack('scripts')
 </body>
 </html>

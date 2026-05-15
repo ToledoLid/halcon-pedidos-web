@@ -1,331 +1,99 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Halcon System - @yield('title', 'Dashboard')</title>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+@extends('layouts.app')
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #e9ecef;
-            overflow-x: hidden;
-        }
+@section('title', 'Dashboard')
 
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            background: linear-gradient(135deg, #1a1e2b 0%, #0f1119 100%);
-            color: white;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .sidebar-header {
-            padding: 24px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .sidebar-header h3 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #4e73df, #224abe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .sidebar-header p {
-            font-size: 0.75rem;
-            opacity: 0.6;
-            margin-top: 5px;
-        }
-
-        .sidebar-nav {
-            padding: 20px 0;
-        }
-
-        .nav-item {
-            margin: 8px 15px;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link i {
-            font-size: 1.25rem;
-            width: 24px;
-        }
-
-        .nav-link:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .nav-link.active {
-            background: linear-gradient(135deg, #4e73df, #224abe);
-            color: white;
-            box-shadow: 0 4px 15px rgba(78,115,223,0.3);
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 280px;
-            min-height: 100vh;
-        }
-
-        /* Top Navbar */
-        .top-navbar {
-            background: white;
-            padding: 15px 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #4e73df, #224abe);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .user-name {
-            font-weight: 500;
-            color: #1a1e2b;
-        }
-
-        /* Content Area */
-        .content-area {
-            padding: 30px;
-        }
-
-        /* Cards */
-        .stat-card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #4e73df, #224abe);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1a1e2b;
-        }
-
-        .stat-label {
-            color: #6c757d;
-            font-size: 0.875rem;
-        }
-
-        /* Tables */
-        .custom-table {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .custom-table thead {
-            background: linear-gradient(135deg, #1a1e2b 0%, #0f1119 100%);
-            color: white;
-        }
-
-        .custom-table thead th {
-            padding: 15px;
-            font-weight: 500;
-            border: none;
-        }
-
-        .custom-table tbody td {
-            padding: 12px 15px;
-            vertical-align: middle;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .custom-table tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, #4e73df, #224abe);
-            border: none;
-            padding: 10px 24px;
-            border-radius: 12px;
-            font-weight: 500;
-            transition: transform 0.2s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(78,115,223,0.3);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .sidebar.show {
-                transform: translateX(0);
-            }
-        }
-    </style>
-    @stack('styles')
-</head>
-<body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h3>Halcon System</h3>
-            <p>Seguimiento de Pedidos</p>
-        </div>
-        <div class="sidebar-nav">
-            <div class="nav-item">
-                <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                    <i class="bi bi-grid-1x2"></i>
-                    <span>Dashboard</span>
-                </a>
+@section('content')
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">{{ $total ?? 0 }}</div>
+                    <div class="stat-label">Total Pedidos</div>
+                </div>
+                <div class="stat-icon"><i class="bi bi-box-seam"></i></div>
             </div>
-            @if(auth()->user()->role && auth()->user()->role->name == 'admin')
-            <div class="nav-item">
-                <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                    <i class="bi bi-people"></i>
-                    <span>Usuarios</span>
-                </a>
-            </div>
-            @endif
-            <div class="nav-item">
-                <a href="{{ route('orders.index') }}" class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}">
-                    <i class="bi bi-box-seam"></i>
-                    <span>Pedidos</span>
-                </a>
-            </div>
-            @if(auth()->user()->role && auth()->user()->role->name == 'admin')
-            <div class="nav-item">
-                <a href="{{ route('orders.trashed') }}" class="nav-link">
-                    <i class="bi bi-archive"></i>
-                    <span>Archivados</span>
-                </a>
-            </div>
-            @endif
         </div>
     </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="top-navbar">
-            <div>
-                <button class="btn btn-link d-md-none" id="sidebarToggle">
-                    <i class="bi bi-list fs-4"></i>
-                </button>
-                <h5 class="mb-0">@yield('page-title', 'Dashboard')</h5>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">{{ $delivered ?? 0 }}</div>
+                    <div class="stat-label">Entregados</div>
+                </div>
+                <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
             </div>
-            <div class="user-info">
-                <span class="user-name">{{ Auth::user()->name }}</span>
-                <div class="user-avatar">
-                    {{ substr(Auth::user()->name, 0, 1) }}
-                </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-link text-dark text-decoration-none">
-                        <i class="bi bi-box-arrow-right"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <div class="content-area">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            @yield('content')
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">{{ $inRoute ?? 0 }}</div>
+                    <div class="stat-label">En Ruta</div>
+                </div>
+                <div class="stat-icon"><i class="bi bi-truck"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">{{ $inProcess ?? 0 }}</div>
+                    <div class="stat-label">En Proceso</div>
+                </div>
+                <div class="stat-icon"><i class="bi bi-clock-history"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('show');
-        });
-    </script>
-    @stack('scripts')
-</body>
-</html>
+<div class="table-custom">
+    <table class="table mb-0">
+        <thead>
+            <tr><th>Factura</th><th>Cliente</th><th>Dirección</th><th>Estado</th><th>Foto</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+            @forelse($orders ?? [] as $order)
+            <tr>
+                <td>{{ $order['invoice'] }}</td>
+                <td>{{ $order['customer'] }}</td>
+                <td>{{ $order['address'] }}</td>
+                <td><span class="badge-status badge-{{ $order['status'] }}">
+                    @if($order['status']=='delivered') Entregado
+                    @elseif($order['status']=='in_route') En Ruta
+                    @else En Proceso @endif
+                </span></td>
+                <td>@if($order['photo'])<img src="http://localhost:3000{{ $order['photo'] }}" width="50">@endif</td>
+                <td>
+                    <select onchange="updateStatus({{ $order['id'] }}, this.value)" class="form-select form-select-sm">
+                        <option value="in_process" {{ $order['status']=='in_process' ? 'selected' : '' }}>En Proceso</option>
+                        <option value="in_route" {{ $order['status']=='in_route' ? 'selected' : '' }}>En Ruta</option>
+                        <option value="delivered" {{ $order['status']=='delivered' ? 'selected' : '' }}>Entregado</option>
+                    </select>
+                    <form method="POST" action="{{ route('orders.photo', $order['id']) }}" enctype="multipart/form-data" class="mt-2">
+                        @csrf
+                        <input type="file" name="photo" class="form-control form-control-sm mb-1">
+                        <button type="submit" class="btn btn-sm btn-primary w-100">Subir Foto</button>
+                    </form>
+                </td>
+            </tr>
+            @empty
+            <tr><td colspan="6" class="text-center">No hay órdenes</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
+
+<script>
+function updateStatus(orderId, status) {
+    fetch('/orders/' + orderId + '/status', {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+        body: JSON.stringify({status: status})
+    }).then(() => location.reload());
+}
+</script>
+@endsection
